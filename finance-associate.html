@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finance Associate — GuestReady Spain</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --accent: #22d3ee;
+      --accent-2: #a855f7;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --card: #1f2937;
+      --success: #34d399;
+      --warn: #fbbf24;
+      --danger: #fb7185;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(34,211,238,0.12), transparent 32%),
+                  radial-gradient(circle at 80% 0%, rgba(168,85,247,0.2), transparent 30%),
+                  var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    header {
+      padding: 32px clamp(16px, 4vw, 56px) 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .logo .mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, var(--accent), var(--accent-2));
+      display: grid;
+      place-items: center;
+      color: #0b1220;
+      font-weight: 800;
+      box-shadow: 0 10px 30px rgba(168, 85, 247, 0.35);
+    }
+
+    .cta {
+      background: linear-gradient(120deg, var(--accent), var(--accent-2));
+      border: none;
+      color: #0b1220;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(34,211,238,0.32);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .cta:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(168,85,247,0.35); }
+
+    main { padding: 10px clamp(16px, 4vw, 56px) 72px; }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(34,211,238,0.12), rgba(168,85,247,0.10));
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 24px;
+      padding: clamp(18px, 6vw, 42px);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      box-shadow: 0 22px 60px rgba(0,0,0,0.35);
+    }
+
+    .hero h1 { margin: 0; font-size: clamp(26px, 4vw, 38px); }
+    .hero p { color: var(--muted); margin: 10px 0 18px; }
+
+    .pill-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .pill {
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.06);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .sparkline {
+      background: var(--panel);
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.05);
+      position: relative;
+    }
+
+    .sparkline canvas { width: 100%; height: 100%; }
+
+    .legend { display: flex; gap: 12px; align-items: center; margin-top: 6px; color: var(--muted); font-size: 13px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+    section { margin-top: 42px; }
+    section h2 { margin-bottom: 8px; }
+    section > p { color: var(--muted); margin-top: 0; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+    .card {
+      background: var(--card);
+      padding: 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card h3 { margin: 0 0 8px; }
+    .card p { margin: 0; color: var(--muted); }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+    }
+
+    .timeline {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scroll-snap-type: x mandatory;
+    }
+
+    .timeline .card { min-width: 220px; scroll-snap-align: start; }
+
+    .progress-ring { width: 110px; height: 110px; position: relative; margin: 0 auto 8px; }
+    .progress-ring circle {
+      fill: none;
+      stroke-width: 10;
+      stroke-linecap: round;
+    }
+    .progress-ring text {
+      font-size: 18px;
+      fill: var(--text);
+      font-weight: 700;
+    }
+
+    .heatmap { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+    .heatmap .card { text-align: center; }
+
+    .chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .chip {
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .chip.active { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(34,211,238,0.2); }
+
+    .board { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+    .board .card { transition: transform 0.2s ease; }
+    .board .card:hover { transform: translateY(-4px); }
+
+    .status-pill { padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; color: #0b1220; display: inline-block; }
+    .s-success { background: var(--success); }
+    .s-warn { background: var(--warn); }
+    .s-danger { background: var(--danger); }
+
+    .accordion { border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; background: var(--card); overflow: hidden; }
+    .accordion-item { border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .accordion-item:last-child { border-bottom: none; }
+    .accordion-title { padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+    .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.25s ease; padding: 0 16px; }
+    .accordion-content p { color: var(--muted); }
+    .chevron { transition: transform 0.25s ease; }
+    .accordion-item.active .chevron { transform: rotate(180deg); }
+
+    footer { margin-top: 48px; color: var(--muted); text-align: center; padding-bottom: 36px; }
+
+    @media (max-width: 640px) {
+      header { flex-direction: column; gap: 12px; align-items: flex-start; }
+      .timeline { padding-bottom: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="logo" href="#top">
+      <div class="mark">GR</div>
+      <div>Finance Associate · GuestReady Spain</div>
+    </a>
+    <button class="cta" id="focusButton">Today’s Focus</button>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div>
+        <h1>Bringing clarity, control, and confidence to GuestReady Spain’s finances.</h1>
+        <p>As the Finance Associate, I blend structured accounting, smart automation, and stakeholder partnership to keep every booking, invoice, and euro flowing smoothly across the GuestReady ecosystem.</p>
+        <div class="pill-row">
+          <span class="pill">Accounts Payable & Receivable</span>
+          <span class="pill">Cash Flow Guardrails</span>
+          <span class="pill">Owner & Guest Reconciliations</span>
+          <span class="pill">Compliance & Audit Readiness</span>
+          <span class="pill">Insights & Performance Signals</span>
+        </div>
+      </div>
+      <div class="sparkline">
+        <canvas id="sparkline" width="420" height="200" aria-label="Collections vs payouts chart"></canvas>
+        <div class="legend">
+          <span class="dot" style="background: var(--accent);"></span> Collections
+          <span class="dot" style="background: var(--accent-2);"></span> Payouts
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Daily Rhythm</h2>
+      <p>A visual timeline of how I keep operational finances aligned with bookings, owners, and vendors.</p>
+      <div class="timeline" id="timeline"></div>
+    </section>
+
+    <section>
+      <h2>Core Responsibilities</h2>
+      <p>Each responsibility is paired with an interactive status pulse to show current focus areas.</p>
+      <div class="grid" id="responsibilities"></div>
+    </section>
+
+    <section>
+      <h2>Impact Dashboard</h2>
+      <p>Select a scenario to see how my work safeguards revenue, owners, and guests.</p>
+      <div class="chip-row" id="scenarioChips"></div>
+      <div class="board" id="scenarioBoard"></div>
+    </section>
+
+    <section>
+      <h2>Controls & Compliance</h2>
+      <p>An expandable checklist of controls that keep GuestReady Spain audit-ready.</p>
+      <div class="accordion" id="controls"></div>
+    </section>
+  </main>
+
+  <footer>
+    Built for quick browsing — open this file directly in your favorite browser to explore interactively.
+  </footer>
+
+  <script>
+    const timelineData = [
+      { title: 'Morning sweep', time: '09:00', text: 'Reconcile overnight bookings, Stripe payouts, and bank feeds to ensure platform-to-ledger sync.' },
+      { title: 'Owner settlements', time: '10:30', text: 'Allocate revenues, commissions, and pass-through costs; prepare owner statements for Spain portfolio.' },
+      { title: 'Payables control', time: '12:00', text: 'Validate supplier invoices vs POs/agreements, schedule payments, and flag variances.' },
+      { title: 'Midday signals', time: '13:00', text: 'Refresh dashboards for occupancy, ADR, and cash runway to surface risks early.' },
+      { title: 'Guest/owner support', time: '15:00', text: 'Resolve payment issues, refunds, and compliance queries in coordination with CX and Ops.' },
+      { title: 'Close-out', time: '17:30', text: 'Post journals, lock day’s approvals, and share highlights with the country lead.' },
+    ];
+
+    const responsibilities = [
+      { title: 'Booking-to-cash integrity', text: 'Match PMS bookings, channel payouts, and bank statements to prevent leakage and delays.', status: 'On track', tone: 'success' },
+      { title: 'Owner & vendor trust', text: 'Accurate statements, timely payouts, and transparent fee explanations sustain relationships.', status: 'Watch', tone: 'warn' },
+      { title: 'Compliance readiness', text: 'Maintain VAT coding, invoice sequencing, and evidence for audits and local regulations.', status: 'Secure', tone: 'success' },
+      { title: 'Cost discipline', text: 'Track property-level P&L, flag anomalies, and negotiate terms with recurring suppliers.', status: 'Elevated', tone: 'danger' },
+      { title: 'Insights & automation', text: 'Create lightweight tooling (sheets, scripts) to shorten monthly close and reduce manual tasks.', status: 'In progress', tone: 'warn' },
+      { title: 'Cash positioning', text: 'Monitor upcoming payouts vs. inflows to keep runway and working capital healthy.', status: 'Stable', tone: 'success' },
+    ];
+
+    const scenarios = {
+      owners: {
+        title: 'Owner confidence',
+        cards: [
+          { heading: 'Timely statements', desc: 'Monthly packs with revenue splits, fees, and taxes delivered on a predictable cadence.' },
+          { heading: 'Transparent adjustments', desc: 'Clear notes on chargebacks, refunds, or maintenance offsets with proof-of-spend.' },
+          { heading: 'Euro-first clarity', desc: 'FX impacts highlighted for non-EUR owners; bank details validated before payouts.' },
+        ],
+      },
+      guests: {
+        title: 'Guest experience',
+        cards: [
+          { heading: 'Fast refunds', desc: 'Automated refund flows for cancellations, with human review for edge cases.' },
+          { heading: 'Deposit governance', desc: 'Secure handling of deposits and damage claims with traceable evidence.' },
+          { heading: 'Clean receipts', desc: 'VAT-compliant invoices issued on request; seamless for business travelers.' },
+        ],
+      },
+      operations: {
+        title: 'Operations alignment',
+        cards: [
+          { heading: 'Maintenance spend visibility', desc: 'Per-property spend dashboards to prioritize upkeep without overshooting budgets.' },
+          { heading: 'Vendor reliability', desc: 'Payment predictability improves partner SLAs and response times across Spain.' },
+          { heading: 'Issue triage', desc: 'Shared signals on failed payments or disputes to address root causes quickly.' },
+        ],
+      },
+      leadership: {
+        title: 'Leadership signals',
+        cards: [
+          { heading: 'Cash runway clarity', desc: 'Forward-looking cash view by week with collections/payout bands.' },
+          { heading: 'Margin health', desc: 'Tracking ADR, occupancy, and commissions to optimize profitability.' },
+          { heading: 'Risk radar', desc: 'Alerts on anomalies, chargebacks, or compliance deadlines before they escalate.' },
+        ],
+      },
+    };
+
+    const controls = [
+      { title: 'Two-way reconciliation', details: 'Daily comparison of PMS bookings vs. Stripe/Airbnb/Booking.com payouts and bank statements, with variance buckets.' },
+      { title: 'Invoice hygiene', details: 'VAT tagging, sequential numbering, and mandatory support docs before approval to pay.' },
+      { title: 'Payment approvals', details: 'Dual-approval thresholds and vendor master data reviews to prevent errors and fraud.' },
+      { title: 'Cut-off discipline', details: 'Month-end accruals, deferred revenue checks, and suspense account clearance.' },
+      { title: 'Data trails', details: 'Versioned templates, checklist logs, and audit-ready evidence for Spain-specific requirements.' },
+    ];
+
+    function renderTimeline() {
+      const container = document.getElementById('timeline');
+      container.innerHTML = timelineData.map(item => `
+        <article class="card">
+          <div class="tag"><span>⏱</span>${item.time}</div>
+          <h3>${item.title}</h3>
+          <p>${item.text}</p>
+        </article>
+      `).join('');
+    }
+
+    function renderResponsibilities() {
+      const container = document.getElementById('responsibilities');
+      container.innerHTML = responsibilities.map(res => {
+        const colors = { success: 'var(--success)', warn: 'var(--warn)', danger: 'var(--danger)' };
+        const value = Math.floor(Math.random() * 30) + 65; // playful completion %
+        return `
+          <article class="card">
+            <div class="progress-ring" aria-label="${res.title} status">
+              <svg width="110" height="110" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="48" stroke="rgba(255,255,255,0.07)"></circle>
+                <circle cx="60" cy="60" r="48" stroke="${colors[res.tone]}" stroke-dasharray="${value * 3}, 999" transform="rotate(-90 60 60)"></circle>
+                <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle">${value}%</text>
+              </svg>
+            </div>
+            <div class="status-pill s-${res.tone}">${res.status}</div>
+            <h3>${res.title}</h3>
+            <p>${res.text}</p>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderScenarios(selected = 'owners') {
+      const chipContainer = document.getElementById('scenarioChips');
+      chipContainer.innerHTML = Object.keys(scenarios).map(key => `
+        <button class="chip ${key === selected ? 'active' : ''}" data-key="${key}">${scenarios[key].title}</button>
+      `).join('');
+
+      const board = document.getElementById('scenarioBoard');
+      board.innerHTML = scenarios[selected].cards.map(card => `
+        <article class="card">
+          <h3>${card.heading}</h3>
+          <p>${card.desc}</p>
+        </article>
+      `).join('');
+    }
+
+    function renderControls() {
+      const acc = document.getElementById('controls');
+      acc.innerHTML = controls.map((item, idx) => `
+        <div class="accordion-item ${idx === 0 ? 'active' : ''}">
+          <div class="accordion-title" data-index="${idx}">
+            <span>${item.title}</span>
+            <span class="chevron">▼</span>
+          </div>
+          <div class="accordion-content" style="max-height:${idx === 0 ? '160px' : '0'}">
+            <p>${item.details}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function setupInteractions() {
+      // Scenario chips
+      document.getElementById('scenarioChips').addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-key]');
+        if (!btn) return;
+        renderScenarios(btn.dataset.key);
+      });
+
+      // Accordion
+      document.getElementById('controls').addEventListener('click', (e) => {
+        const title = e.target.closest('.accordion-title');
+        if (!title) return;
+        const idx = title.dataset.index;
+        document.querySelectorAll('.accordion-item').forEach((item, itemIdx) => {
+          const content = item.querySelector('.accordion-content');
+          if (itemIdx == idx) {
+            const isActive = item.classList.toggle('active');
+            content.style.maxHeight = isActive ? content.scrollHeight + 'px' : '0';
+          } else {
+            item.classList.remove('active');
+            item.querySelector('.accordion-content').style.maxHeight = '0';
+          }
+        });
+      });
+
+      // Focus button
+      const focusButton = document.getElementById('focusButton');
+      focusButton.addEventListener('click', () => {
+        const urgent = responsibilities.find(r => r.tone === 'danger') || responsibilities[0];
+        alert(`Today\'s focus: ${urgent.title}\n\n${urgent.text}`);
+      });
+    }
+
+    function drawSparkline() {
+      const canvas = document.getElementById('sparkline');
+      const ctx = canvas.getContext('2d');
+      const width = canvas.width;
+      const height = canvas.height;
+      const padding = 20;
+      const pointsA = [72, 90, 84, 96, 110, 104, 118, 125];
+      const pointsB = [64, 70, 78, 82, 92, 105, 102, 108];
+
+      function drawLine(points, color) {
+        const max = Math.max(...points) + 20;
+        const step = (width - padding * 2) / (points.length - 1);
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 3;
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = color + '55';
+        points.forEach((val, i) => {
+          const x = padding + step * i;
+          const y = height - padding - (val / max) * (height - padding * 2);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 0.12;
+        ctx.lineTo(width - padding, height - padding);
+        ctx.lineTo(padding, height - padding);
+        ctx.closePath();
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+
+      // backdrop
+      ctx.fillStyle = 'rgba(255,255,255,0.02)';
+      ctx.fillRect(0, 0, width, height);
+
+      drawLine(pointsA, getComputedStyle(document.documentElement).getPropertyValue('--accent'));
+      drawLine(pointsB, getComputedStyle(document.documentElement).getPropertyValue('--accent-2'));
+    }
+
+    renderTimeline();
+    renderResponsibilities();
+    renderScenarios();
+    renderControls();
+    setupInteractions();
+    drawSparkline();
+  </script>
+</body>
+</html>
