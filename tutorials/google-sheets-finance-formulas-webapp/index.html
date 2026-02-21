@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finance Sheets Formula Lab</title>
+  <style>
+    :root {
+      --bg: #071026;
+      --panel: #101b35;
+      --card: #13264a;
+      --text: #e8efff;
+      --muted: #9cb1d9;
+      --accent: #57d4ff;
+      --accent-2: #71ffa8;
+      --warn: #ffc857;
+      --shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at 20% 0%, #1d3f84 0%, var(--bg) 45%);
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .container {
+      width: min(1100px, 92vw);
+      margin: 0 auto;
+      padding: 2rem 0 3rem;
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    .hero {
+      background: linear-gradient(120deg, rgba(87, 212, 255, 0.2), rgba(113, 255, 168, 0.14));
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 24px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 1rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.7rem, 3vw, 2.6rem);
+    }
+
+    .hero p {
+      color: var(--muted);
+      max-width: 75ch;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 0.7rem;
+    }
+
+    .pill {
+      background: rgba(0, 0, 0, 0.23);
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 0.4rem 0.75rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1.1fr auto;
+      gap: 0.8rem;
+      margin: 1.4rem 0;
+    }
+
+    .search {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(5, 15, 34, 0.8);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 0.75rem 0.9rem;
+      font-size: 1rem;
+    }
+
+    .filters {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    button.filter {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(5, 15, 34, 0.8);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 0.5rem 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    button.filter.active {
+      background: linear-gradient(120deg, #245cb6, #2a8575);
+      border-color: transparent;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .card {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: var(--radius);
+      padding: 1rem;
+      display: grid;
+      gap: 0.7rem;
+      box-shadow: var(--shadow);
+    }
+
+    .tag-row {
+      display: flex;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .tag {
+      border-radius: 999px;
+      font-size: 0.73rem;
+      padding: 0.25rem 0.55rem;
+      font-weight: 700;
+      color: #03132c;
+      background: var(--accent);
+    }
+
+    .level {
+      background: var(--warn);
+    }
+
+    .formula {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      padding: 0.55rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      overflow: auto;
+    }
+
+    .example {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .lab {
+      margin-top: 2rem;
+      background: var(--panel);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: var(--shadow);
+      padding: 1.1rem;
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .lab-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.8rem;
+      align-items: end;
+    }
+
+    label {
+      display: grid;
+      gap: 0.3rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    input, select {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: #081530;
+      color: var(--text);
+      border-radius: 8px;
+      padding: 0.55rem;
+      font-size: 1rem;
+    }
+
+    .result {
+      border-radius: 10px;
+      background: rgba(113, 255, 168, 0.1);
+      border: 1px dashed rgba(113, 255, 168, 0.45);
+      padding: 0.8rem;
+      font-weight: 700;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      grid-column: 1 / -1;
+      padding: 1.2rem;
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="hero">
+      <h1>💼 Finance Sheets Formula Lab</h1>
+      <p>
+        A visual and practical guide to the Google Sheets formulas most used in operating finance and accounting roles. Explore by category,
+        search by use case, and test quick calculations in the mini formula lab.
+      </p>
+      <div class="stats">
+        <div class="pill">📊 15 core formulas</div>
+        <div class="pill">🏷️ 5 finance categories</div>
+        <div class="pill">🧪 Interactive mini-lab</div>
+      </div>
+    </section>
+
+    <section class="controls">
+      <input id="search" class="search" placeholder="Search formula, purpose, or keyword (e.g., cash flow, lookup, variance)..." />
+      <div class="filters" id="filters"></div>
+    </section>
+
+    <section>
+      <h2>Formula Explorer</h2>
+      <div class="grid" id="formulaGrid"></div>
+    </section>
+
+    <section class="lab">
+      <h2>🧪 Mini Formula Lab (Hands-on)</h2>
+      <p class="example">Pick a common finance scenario and play with numbers to understand the logic behind the formula.</p>
+      <div class="lab-row">
+        <label>
+          Scenario
+          <select id="scenario">
+            <option value="margin">Gross Margin %</option>
+            <option value="variance">Budget Variance %</option>
+            <option value="days">Days Payable Outstanding (simple)</option>
+          </select>
+        </label>
+        <label>
+          Value A
+          <input id="valueA" type="number" value="100000" />
+        </label>
+        <label>
+          Value B
+          <input id="valueB" type="number" value="65000" />
+        </label>
+        <label>
+          Value C
+          <input id="valueC" type="number" value="365" />
+        </label>
+      </div>
+      <div class="result" id="labResult"></div>
+    </section>
+  </main>
+
+  <script>
+    const formulas = [
+      { name: 'SUMIFS', category: 'Reporting', level: 'Core', formula: '=SUMIFS(amount_range, dept_range, "Sales", month_range, "Jan")', purpose: 'Total expenses or revenue by multiple filters.', example: 'Monthly OPEX by department.' },
+      { name: 'COUNTIFS', category: 'Reporting', level: 'Core', formula: '=COUNTIFS(status_range, "Open", owner_range, "Finance")', purpose: 'Count records meeting multiple finance conditions.', example: 'Open invoices per owner.' },
+      { name: 'IF', category: 'Controls', level: 'Core', formula: '=IF(A2>budget, "Over", "Within")', purpose: 'Flag over-budget or policy exceptions.', example: 'Spend policy compliance checks.' },
+      { name: 'IFS', category: 'Controls', level: 'Intermediate', formula: '=IFS(A2<0, "Error", A2<0.8, "Low", A2<1.2, "OK", TRUE, "High")', purpose: 'Classify KPI ranges with multiple thresholds.', example: 'Collection efficiency status.' },
+      { name: 'IFERROR', category: 'Controls', level: 'Core', formula: '=IFERROR(VLOOKUP(A2, mapping!A:B, 2, FALSE), "Missing")', purpose: 'Avoid noisy errors in dashboards and close files.', example: 'Handle missing account mappings.' },
+      { name: 'XLOOKUP', category: 'Reconciliation', level: 'Core', formula: '=XLOOKUP(invoice_id, ledger!A:A, ledger!F:F, "Not found")', purpose: 'Match records across ERP exports and reconciliations.', example: 'Find payment status by invoice ID.' },
+      { name: 'INDEX + MATCH', category: 'Reconciliation', level: 'Intermediate', formula: '=INDEX(ledger!F:F, MATCH(A2, ledger!A:A, 0))', purpose: 'Flexible lookup when key isn\'t the first column.', example: 'Pull account owner by cost center.' },
+      { name: 'FILTER', category: 'Reporting', level: 'Intermediate', formula: '=FILTER(A2:G, G2:G="Overdue", D2:D>0)', purpose: 'Create dynamic lists for action-focused reporting.', example: 'Overdue unpaid vendor bills.' },
+      { name: 'QUERY', category: 'Reporting', level: 'Advanced', formula: '=QUERY(A1:G, "select B,sum(E) where C=\'AP\' group by B", 1)', purpose: 'SQL-like aggregation directly in Sheets.', example: 'Spend by department for AP entries.' },
+      { name: 'TEXT', category: 'Formatting', level: 'Core', formula: '=TEXT(A2, "$#,##0.00")', purpose: 'Format values clearly for management reports.', example: 'Present monetary KPIs consistently.' },
+      { name: 'EOMONTH', category: 'Planning', level: 'Core', formula: '=EOMONTH(TODAY(), 0)', purpose: 'Generate month-end dates for close and planning.', example: 'Automatic period boundaries.' },
+      { name: 'WORKDAY', category: 'Planning', level: 'Intermediate', formula: '=WORKDAY(close_start, 5, holidays!A:A)', purpose: 'Calculate due dates excluding weekends/holidays.', example: 'Close checklist milestones.' },
+      { name: 'DATEDIF', category: 'Planning', level: 'Core', formula: '=DATEDIF(invoice_date, TODAY(), "D")', purpose: 'Track aging in days for AR/AP.', example: 'Invoice aging buckets.' },
+      { name: 'ROUND', category: 'Controls', level: 'Core', formula: '=ROUND(calculated_value, 2)', purpose: 'Standardize decimal precision for reports.', example: 'P&L margin display consistency.' },
+      { name: 'SPARKLINE', category: 'Reporting', level: 'Intermediate', formula: '=SPARKLINE(B2:M2, {"charttype","column"})', purpose: 'Visual mini-trends inside finance tables.', example: '12-month expense trend by category.' }
+    ];
+
+    const categories = ['All', ...new Set(formulas.map(f => f.category))];
+    let activeCategory = 'All';
+
+    const filtersEl = document.getElementById('filters');
+    const gridEl = document.getElementById('formulaGrid');
+    const searchEl = document.getElementById('search');
+
+    function renderFilters() {
+      filtersEl.innerHTML = '';
+      categories.forEach(category => {
+        const btn = document.createElement('button');
+        btn.className = `filter ${category === activeCategory ? 'active' : ''}`;
+        btn.textContent = category;
+        btn.onclick = () => {
+          activeCategory = category;
+          renderFilters();
+          renderFormulas();
+        };
+        filtersEl.appendChild(btn);
+      });
+    }
+
+    function renderFormulas() {
+      const query = searchEl.value.trim().toLowerCase();
+      const visible = formulas.filter(item => {
+        const matchCategory = activeCategory === 'All' || item.category === activeCategory;
+        const matchQuery = !query || [item.name, item.purpose, item.example, item.category, item.formula].join(' ').toLowerCase().includes(query);
+        return matchCategory && matchQuery;
+      });
+
+      if (!visible.length) {
+        gridEl.innerHTML = '<div class="empty">No formulas match your filters. Try a broader keyword.</div>';
+        return;
+      }
+
+      gridEl.innerHTML = visible.map(item => `
+        <article class="card">
+          <div class="tag-row">
+            <span class="tag">${item.category}</span>
+            <span class="tag level">${item.level}</span>
+          </div>
+          <h3>${item.name}</h3>
+          <p>${item.purpose}</p>
+          <div class="formula">${item.formula}</div>
+          <p class="example">💡 Example: ${item.example}</p>
+        </article>
+      `).join('');
+    }
+
+    function updateLabResult() {
+      const scenario = document.getElementById('scenario').value;
+      const a = Number(document.getElementById('valueA').value) || 0;
+      const b = Number(document.getElementById('valueB').value) || 0;
+      const c = Number(document.getElementById('valueC').value) || 0;
+      const resultEl = document.getElementById('labResult');
+
+      if (scenario === 'margin') {
+        const margin = a ? ((a - b) / a) * 100 : 0;
+        resultEl.textContent = `Formula: =(Revenue - COGS)/Revenue  →  Gross Margin = ${margin.toFixed(2)}%`;
+      } else if (scenario === 'variance') {
+        const variance = b ? ((a - b) / b) * 100 : 0;
+        resultEl.textContent = `Formula: =(Actual - Budget)/Budget  →  Variance = ${variance.toFixed(2)}%`;
+      } else {
+        const dpo = c ? (a / b) * c : 0;
+        resultEl.textContent = `Formula: =(AP / COGS) * Days  →  Days Payable Outstanding ≈ ${dpo.toFixed(1)} days`;
+      }
+    }
+
+    searchEl.addEventListener('input', renderFormulas);
+    ['scenario', 'valueA', 'valueB', 'valueC'].forEach(id => {
+      document.getElementById(id).addEventListener('input', updateLabResult);
+    });
+
+    renderFilters();
+    renderFormulas();
+    updateLabResult();
+  </script>
+</body>
+</html>
